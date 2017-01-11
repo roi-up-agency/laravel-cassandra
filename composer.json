@@ -3,6 +3,12 @@
     "description": "Cassandra Eloquent model and Query builder for Laravel",
     "keywords": ["laravel","eloquent","cassandra","database","model"],
     "homepage": "https://github.com/sonvq-qsoftvn/laravel-cassandra",
+    "repositories": [
+            {
+                "type": "composer",
+                "url": "https://packages.nn4m.net"
+            }
+    ],
     "authors": [
         {
             "name": "Quang Son Pro",
