@@ -2,21 +2,20 @@
 
 namespace sonvq\Cassandra;
 
-use Cassandra\Client;
 
 class Connection extends \Illuminate\Database\Connection
 {
     /**
-     * The Cassandra database handler.
+     * The Cassandra keyspace name.
      *
-     * @var \Cassandra\Database
+     * @var string
      */
-    protected $db;
+    protected $keyspace;
 
     /**
      * The Cassandra connection handler.
      *
-     * @var \Cassandra\Client
+     * @var \Cassandra\Session
      */
     protected $connection;
 
@@ -31,12 +30,9 @@ class Connection extends \Illuminate\Database\Connection
 
         // You can pass options directly to the Cassandra constructor
         $options = array_get($config, 'options', []);
-
+        
         // Create the connection
-        $this->connection = $this->createConnection(null, $config, $options);
-
-        // Select database
-        $this->db = $this->connection->selectDatabase($config['database']);
+        $this->connection =  $this->createConnection(null, $config, $options);
 
         $this->useDefaultPostProcessor();
     }
@@ -78,17 +74,6 @@ class Connection extends \Illuminate\Database\Connection
     }
 
     /**
-     * Get a Cassandra collection.
-     *
-     * @param  string   $name
-     * @return Collection
-     */
-    public function getCollection($name)
-    {
-        return new Collection($this, $this->db->selectCollection($name));
-    }
-
-    /**
      * Get a schema builder instance for the connection.
      *
      * @return Schema\Builder
@@ -98,24 +83,25 @@ class Connection extends \Illuminate\Database\Connection
         return new Schema\Builder($this);
     }
 
-    /**
-     * Get the Cassandra database object.
-     *
-     * @return \Cassandra\Database
-     */
-    public function getCassandra()
-    {
-        return $this->db;
-    }
 
     /**
      * return Cassandra object.
      *
-     * @return \Cassandra\Client
+     * @return \Cassandra\Session
      */
-    public function getCassandraClient()
+    public function getCassandraSession()
     {
         return $this->connection;
+    }
+    
+    /**
+    * Return the Cassandra keyspace
+    *
+    * @return string
+    */
+    public function getKeyspace()
+    {
+        return $this->keyspace;
     }
 
     /**
@@ -134,7 +120,7 @@ class Connection extends \Illuminate\Database\Connection
         if (isset($config['driver_options']) && is_array($config['driver_options'])) {
             $driverOptions = $config['driver_options'];
         }
-
+        
         // Check if the credentials are not already set in the options
         if (!isset($options['username']) && !empty($config['username'])) {
             $options['username'] = $config['username'];
@@ -146,27 +132,33 @@ class Connection extends \Illuminate\Database\Connection
 
         /*return new Client($dsn, $options, $driverOptions);*/
 
-        $cluster = Cassandra::cluster();
+        $cluster = \Cassandra::cluster();
 
         // Authentication
         if (isset($options['username']) && isset($options['password'])) {
             $cluster->withCredentials($options['username'], $options['password']);
             
         }
-
         // Contact Points
-        if (isset($options['contactpoints']) || ( isset($config['contactpoints']) && !empty($config['contactpoints']))) {
-            $contactPoints = $config['contactpoints'];
+        if (isset($options['contactpoints']) || ( isset($config['host']) && !empty($config['host']))) {
+            $contactPoints = $config['host'];
             if (isset($options['contactpoints'])) {
                 $contactPoints = $options['contactpoints'];
             }
-            $cluster->withContactPoints(explode(',', $contactPoints));
+            $cluster->withContactPoints($contactPoints);
         }
 
+        if (!isset($options['port']) && !empty($config['port'])) {
+            $cluster->withPort($config['port']);
+        }
 
-
-        $cluster->build();
-        $session = $cluster->connect();
+        if (isset($options['database']) || isset($config['database'])) {
+            $this->keyspace = $config['database'];
+            $session = $cluster->build()->connect($config['database']);
+        } else {
+            $this->keyspace = null;
+            $session = $cluster->build()->connect();
+        }
 
         return $session;
     }
