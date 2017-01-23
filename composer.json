@@ -1,8 +1,8 @@
 {
-    "name": "nn4m/cassandra",
+    "name": "dsturrock/cassandra",
     "description": "Cassandra Eloquent model and Query builder for Laravel",
     "keywords": ["laravel","eloquent","cassandra","database","model"],
-    "homepage": "https://github.com/sonvq-qsoftvn/laravel-cassandra",
+    "homepage": "https://github.com/dsturrock/laravel-cassandra",
     "type": "project",
     "repositories": [
             {
@@ -14,6 +14,9 @@
         {
             "name": "Quang Son Pro",
             "homepage": "https://byant.co.uk"
+        },
+        {
+            "name": "David Sturrock"
         }
     ],
     "license" : "MIT",
@@ -28,8 +31,8 @@
     },
     "autoload": {
         "psr-0": {
-            "sonvq\\Cassandra": "src/",
-            "sonvq\\Eloquent": "src/"
+            "dsturrock\\Cassandra": "src/",
+            "dsturrock\\Eloquent": "src/"
         }
     },
     "autoload-dev": {
