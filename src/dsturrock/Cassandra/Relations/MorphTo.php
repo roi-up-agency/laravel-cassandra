@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace sonvq\Cassandra\Relations;
+namespace dsturrock\Cassandra\Relations;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo as EloquentMorphTo;
 
