@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace sonvq\Cassandra\Queue;
+namespace dsturrock\Cassandra\Queue;
 
 use Carbon\Carbon;
 use Illuminate\Queue\DatabaseQueue;

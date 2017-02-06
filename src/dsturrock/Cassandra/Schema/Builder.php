@@ -1,9 +1,9 @@
-<?php 
+<?php
 
-namespace sonvq\Cassandra\Schema;
+namespace dsturrock\Cassandra\Schema;
 
 use Closure;
-use sonvq\Cassandra\Connection;
+use dsturrock\Cassandra\Connection;
 
 class Builder extends \Illuminate\Database\Schema\Builder
 {

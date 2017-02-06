@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace sonvq\Cassandra\Query;
 
@@ -90,6 +90,7 @@ class Builder extends BaseBuilder
     {
         $this->grammar = new Grammar;
         $this->connection = $connection;
+        $this->session = $this->connection->getCassandraSession();
         $this->processor = $processor;
     }
 
@@ -289,35 +290,124 @@ class Builder extends BaseBuilder
             }
             $options = [];
 
-            // Apply order, offset, limit and projection
+            // Apply timeout
             if ($this->timeout) {
-                $options['maxTimeMS'] = $this->timeout;
+                $options['timeout'] = $this->timeout;
             }
-            if ($this->orders) {
-                $options['sort'] = $this->orders;
-            }
-            if ($this->offset) {
-                $options['skip'] = $this->offset;
-            }
+
+            //Build query
+            $queryAndArguments = $this->buildSelectQuery($wheres, $options);
+
+            $rawQuery = $queryAndArguments["query"];
+            
             if ($this->limit) {
-                $options['limit'] = $this->limit;
+                $rawQuery = $this->addLimitClause($rawQuery);
             }
-            if ($columns) {
-                $options['projection'] = $columns;
+
+            if (!empty($queryAndArguments['arguments'])) {
+                $options['arguments'] = $queryAndArguments['arguments'];
             }
-            // if ($this->hint)    $cursor->hint($this->hint);
-
-            // Fix for legacy support, converts the results to arrays instead of objects.
-            $options['typeMap'] = ['root' => 'array', 'document' => 'array'];
-
-            // Execute query and get CassandraCursor
-            $cursor = $this->collection->find($wheres, $options);
+            // Execute query
+            $executionOptions = new \Cassandra\ExecutionOptions($options);
+            $preparedStmt = $this->session->prepare($rawQuery);
+            $rows = $this->session->execute($preparedStmt, $executionOptions);
+            
+            $rowValues = array();
 
             // Return results as an array with numeric keys
-            return iterator_to_array($cursor, false);
+            while ($rows->valid()) {
+
+
+                $rowValues[] = $this->processCassandraRow($rows);
+
+                $rows->next();
+
+            }
+
+            return $rowValues;
+
+
         }
     }
 
+
+
+
+    /**
+     * Build a raw select query and values to bind
+     * @param  array $wheres Boolean keys containing columns and values
+     * @return array CQL string and arguments array
+     */
+    public function buildSelectQuery($wheres)
+    {
+        if (empty($this->columns)) {
+            $columns = "*";
+        } else {
+            $columns = '"' . implode('","', $this->columns) . '"';
+        }
+
+        $keyspace = $this->connection->getKeyspace();
+
+        if (empty($keyspace)) {
+            $cql = "SELECT {$columns} FROM {$this->collection}";
+        } else {
+            $cql = "SELECT {$columns} FROM {$keyspace}.{$this->collection}";
+        }
+
+        if (empty($wheres)) {
+            return array("query" => $cql, "arguments" => array());
+        }
+
+        $whereString = "";
+        $arguments = array();
+       //Keys should be one of 'and', 'or'
+        foreach ($wheres as $boolean => $values) {
+
+            $whereStatements = array();
+            
+            $count = count($values);
+
+            for ($i = 0; $i < $count; $i++) {
+                foreach ($values[$i] as $column => $value) {
+                    $whereStatements[] = " \"{$column}\" =  ? ";
+                    $arguments[$column] = $value;
+                }
+            }
+
+            $concatenatedWheres = implode($boolean, $whereStatements);
+
+            if (empty($whereString)) {
+                $whereString = $concatenatedWheres;
+            } else {
+                $whereString = $whereString . $boolean . $concatenatedWheres;
+            }
+        }
+
+        $cql .= " WHERE {$whereString}";
+
+        return array("query" => $cql, "arguments" => $arguments);
+ 
+    }
+
+    private function addLimitClause($queryString)
+    {
+        return $queryString . "LIMIT {$this->limit}";
+    }
+
+    private function processCassandraRow($rows)
+    {
+        $cassandraRow = $rows->current();
+
+        foreach ($cassandraRow as $cassandraColumn => $cassandraType) {
+            if (gettype($cassandraType) == "string") {
+                $rowValue[$cassandraColumn] = $cassandraType;
+            } else {
+                $rowValue[$cassandraColumn] = $cassandraType->__toString();
+            }
+        }
+
+        return $rowValue;
+    }
     /**
      * Generate the unique cache key for the current query.
      *
@@ -601,7 +691,7 @@ class Builder extends BaseBuilder
     public function from($collection)
     {
         if ($collection) {
-            $this->collection = $this->connection->getCollection($collection);
+            $this->collection = $collection;
         }
 
         return parent::from($collection);
@@ -876,11 +966,11 @@ class Builder extends BaseBuilder
 
             // Wrap the where with an $or operator.
             if ($where['boolean'] == 'or') {
-                $result = ['$or' => [$result]];
+                $result = ['or' => [$result]];
             } // If there are multiple wheres, we will wrap it with $and. This is needed
             // to make nested wheres work.
             elseif (count($wheres) > 1) {
-                $result = ['$and' => [$result]];
+                $result = ['and' => [$result]];
             }
 
             // Merge the compiled where with the others.
@@ -932,7 +1022,7 @@ class Builder extends BaseBuilder
         } elseif (array_key_exists($operator, $this->conversion)) {
             $query = [$column => [$this->conversion[$operator] => $value]];
         } else {
-            $query = [$column => ['$' . $operator => $value]];
+            $query = [$column => [$operator => $value]];
         }
 
         return $query;
