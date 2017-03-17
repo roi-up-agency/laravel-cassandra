@@ -1,0 +1,45 @@
+{
+    "name": "dsturrock/cassandra",
+    "description": "Cassandra Eloquent model and Query builder for Laravel",
+    "keywords": ["laravel","eloquent","cassandra","database","model"],
+    "homepage": "https://github.com/dsturrock/laravel-cassandra",
+    "type": "project",
+    "repositories": [
+            {
+                "type": "composer",
+                "url": "https://packages.nn4m.net"
+            }
+    ],
+    "authors": [
+        {
+            "name": "Quang Son Pro",
+            "homepage": "https://byant.co.uk"
+        },
+        {
+            "name": "David Sturrock"
+        }
+    ],
+    "license" : "MIT",
+    "require": {
+        "illuminate/support": "5.1.*",
+        "illuminate/container": "5.1.*",
+        "illuminate/database": "5.1.*",
+        "illuminate/events": "5.1.*"
+    },
+    "require-dev": {
+
+    },
+    "autoload": {
+        "psr-0": {
+            "dsturrock\\Cassandra": "src/",
+            "dsturrock\\Eloquent": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCase.php",
+            "tests/models",
+            "tests/seeds"
+        ]
+    }
+}
