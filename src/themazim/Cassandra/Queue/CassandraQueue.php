@@ -1,6 +1,6 @@
 <?php
 
-namespace dsturrock\Cassandra\Queue;
+namespace themazim\Cassandra\Queue;
 
 use Carbon\Carbon;
 use Illuminate\Queue\DatabaseQueue;
@@ -16,15 +16,15 @@ class CassandraQueue extends DatabaseQueue
     protected function getNextAvailableJob($queue)
     {
         $job = $this->database->table($this->table)
-                    ->lockForUpdate()
-                    ->where('queue', $this->getQueue($queue))
-                    ->where('reserved', 0)
-                    ->where('available_at', '<=', $this->getTime())
-                    ->orderBy('id', 'asc')
-                    ->first();
+            ->lockForUpdate()
+            ->where('queue', $this->getQueue($queue))
+            ->where('reserved', 0)
+            ->where('available_at', '<=', $this->getTime())
+            ->orderBy('id', 'asc')
+            ->first();
 
         if ($job) {
-            $job = (object) $job;
+            $job     = (object) $job;
             $job->id = $job->_id;
         }
 
@@ -42,16 +42,16 @@ class CassandraQueue extends DatabaseQueue
         $expired = Carbon::now()->subSeconds($this->expire)->getTimestamp();
 
         $reserved = $this->database->collection($this->table)
-                    ->where('queue', $this->getQueue($queue))
-                    ->where('reserved', 1)
-                    ->where('reserved_at', '<=', $expired)->get();
+            ->where('queue', $this->getQueue($queue))
+            ->where('reserved', 1)
+            ->where('reserved_at', '<=', $expired)->get();
 
         foreach ($reserved as $job) {
             $attempts = $job['attempts'] + 1;
             $this->releaseJob($job['_id'], $attempts);
         }
     }
-    
+
     /**
      * Release the given job ID from reservation.
      *

@@ -1,8 +1,10 @@
-<?php namespace dsturrock\Cassandra;
+<?php
+namespace themazim\Cassandra;
 
 use Orchestra\Testbench\TestCase;
 
-abstract class BaseTestCase extends TestCase {
+abstract class BaseTestCase extends TestCase
+{
 
     public function setUp()
     {

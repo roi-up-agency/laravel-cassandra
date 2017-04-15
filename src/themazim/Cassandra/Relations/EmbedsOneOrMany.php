@@ -1,6 +1,6 @@
 <?php
 
-namespace dsturrock\Cassandra\Relations;
+namespace themazim\Cassandra\Relations;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -42,14 +42,14 @@ abstract class EmbedsOneOrMany extends Relation
      */
     public function __construct(Builder $query, Model $parent, Model $related, $localKey, $foreignKey, $relation)
     {
-        $this->query = $query;
-        $this->parent = $parent;
-        $this->related = $related;
-        $this->localKey = $localKey;
+        $this->query      = $query;
+        $this->parent     = $parent;
+        $this->related    = $related;
+        $this->localKey   = $localKey;
         $this->foreignKey = $foreignKey;
-        $this->relation = $relation;
+        $this->relation   = $relation;
 
-         // If this is a nested relation, we need to get the parent query instead.
+        // If this is a nested relation, we need to get the parent query instead.
         if ($parentRelation = $this->getParentRelation()) {
             $this->query = $parentRelation->getQuery();
         }
@@ -195,7 +195,7 @@ abstract class EmbedsOneOrMany extends Relation
             $ids = $ids->all();
         }
 
-        if (! is_array($ids)) {
+        if (!is_array($ids)) {
             $ids = [$ids];
         }
 
@@ -233,7 +233,7 @@ abstract class EmbedsOneOrMany extends Relation
     protected function setEmbedded($records)
     {
         // Assign models to parent attributes array.
-        $attributes = $this->parent->getAttributes();
+        $attributes                  = $this->parent->getAttributes();
         $attributes[$this->localKey] = $records;
 
         // Set raw attributes to skip mutators.
@@ -263,7 +263,7 @@ abstract class EmbedsOneOrMany extends Relation
      * Convert an array of records to a Collection.
      *
      * @param  array  $records
-     * @return \dsturrock\Cassandra\Eloquent\Collection
+     * @return \themazim\Cassandra\Eloquent\Collection
      */
     protected function toCollection(array $records = [])
     {

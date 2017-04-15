@@ -1,11 +1,11 @@
 <?php
 
-namespace dsturrock\Cassandra\Relations;
+namespace themazim\Cassandra\Relations;
 
+use Cassandra\BSON\ObjectID;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Cassandra\BSON\ObjectID;
 
 class EmbedsMany extends EmbedsOneOrMany
 {
@@ -43,7 +43,7 @@ class EmbedsMany extends EmbedsOneOrMany
     public function performInsert(Model $model)
     {
         // Generate a new key if needed.
-        if ($model->getKeyName() == '_id' and ! $model->getKey()) {
+        if ($model->getKeyName() == '_id' and !$model->getKey()) {
             $model->setAttribute('_id', new ObjectID);
         }
 
@@ -88,7 +88,7 @@ class EmbedsMany extends EmbedsOneOrMany
 
         // Update document in database.
         $result = $this->getBaseQuery()->where($this->localKey . '.' . $model->getKeyName(), $foreignKey)
-                                       ->update($values);
+            ->update($values);
 
         // Attach the model to its parent.
         if ($result) {
@@ -133,7 +133,7 @@ class EmbedsMany extends EmbedsOneOrMany
      */
     public function associate(Model $model)
     {
-        if (! $this->contains($model)) {
+        if (!$this->contains($model)) {
             return $this->associateNew($model);
         } else {
             return $this->associateExisting($model);
@@ -242,7 +242,7 @@ class EmbedsMany extends EmbedsOneOrMany
     protected function associateNew($model)
     {
         // Create a new key if needed.
-        if (! $model->getAttribute('_id')) {
+        if (!$model->getAttribute('_id')) {
             $model->setAttribute('_id', new ObjectID);
         }
 
@@ -288,14 +288,14 @@ class EmbedsMany extends EmbedsOneOrMany
      */
     public function paginate($perPage = null)
     {
-        $page = Paginator::resolveCurrentPage();
+        $page    = Paginator::resolveCurrentPage();
         $perPage = $perPage ?: $this->related->getPerPage();
 
         $results = $this->getEmbedded();
 
         $total = count($results);
 
-        $start = ($page - 1) * $perPage;
+        $start  = ($page - 1) * $perPage;
         $sliced = array_slice($results, $start, $perPage);
 
         return new LengthAwarePaginator($sliced, $total, $perPage, $page, [
@@ -320,7 +320,7 @@ class EmbedsMany extends EmbedsOneOrMany
      */
     protected function setEmbedded($models)
     {
-        if (! is_array($models)) {
+        if (!is_array($models)) {
             $models = [$models];
         }
 

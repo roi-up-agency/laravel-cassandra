@@ -1,8 +1,7 @@
-<?php namespace dsturrock\Cassandra\QueryBuilder;
+<?php namespace themazim\Cassandra\QueryBuilder;
 
-
-class TestSelects extends BaseTestCase {
-
+class TestSelects extends BaseTestCase
+{
 
     public function it_builds_wheres_with_no_columns()
     {
@@ -11,6 +10,6 @@ class TestSelects extends BaseTestCase {
 
     public function it_builds_wheres_with_columns()
     {
-        
+
     }
 }

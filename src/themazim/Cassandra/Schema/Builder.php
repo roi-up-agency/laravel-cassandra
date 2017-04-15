@@ -1,9 +1,9 @@
 <?php
 
-namespace dsturrock\Cassandra\Schema;
+namespace themazim\Cassandra\Schema;
 
 use Closure;
-use dsturrock\Cassandra\Connection;
+use themazim\Cassandra\Connection;
 
 class Builder extends \Illuminate\Database\Schema\Builder
 {

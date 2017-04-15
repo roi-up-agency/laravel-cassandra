@@ -1,9 +1,9 @@
-<?php 
+<?php
 
-namespace dsturrock\Cassandra\Auth;
+namespace themazim\Cassandra\Auth;
 
-use Illuminate\Auth\Passwords\DatabaseTokenRepository as BaseDatabaseTokenRepository;
 use Cassandra\BSON\UTCDateTime;
+use Illuminate\Auth\Passwords\DatabaseTokenRepository as BaseDatabaseTokenRepository;
 
 class DatabaseTokenRepository extends BaseDatabaseTokenRepository
 {

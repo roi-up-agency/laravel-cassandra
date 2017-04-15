@@ -1,9 +1,9 @@
 <?php
 
-namespace dsturrock\Cassandra\Relations;
+namespace themazim\Cassandra\Relations;
 
-use Illuminate\Database\Eloquent\Model;
 use Cassandra\BSON\ObjectID;
+use Illuminate\Database\Eloquent\Model;
 
 class EmbedsOne extends EmbedsOneOrMany
 {
@@ -41,7 +41,7 @@ class EmbedsOne extends EmbedsOneOrMany
     public function performInsert(Model $model)
     {
         // Generate a new key if needed.
-        if ($model->getKeyName() == '_id' and ! $model->getKey()) {
+        if ($model->getKeyName() == '_id' and !$model->getKey()) {
             $model->setAttribute('_id', new ObjectID);
         }
 

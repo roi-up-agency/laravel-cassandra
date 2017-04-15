@@ -1,7 +1,6 @@
-<?php 
+<?php
 
-namespace dsturrock\Cassandra;
-
+namespace themazim\Cassandra;
 
 class Connection extends \Illuminate\Database\Connection
 {
@@ -30,9 +29,9 @@ class Connection extends \Illuminate\Database\Connection
 
         // You can pass options directly to the Cassandra constructor
         $options = array_get($config, 'options', []);
-        
+
         // Create the connection
-        $this->connection =  $this->createConnection(null, $config, $options);
+        $this->connection = $this->createConnection(null, $config, $options);
 
         $this->useDefaultPostProcessor();
     }
@@ -83,7 +82,6 @@ class Connection extends \Illuminate\Database\Connection
         return new Schema\Builder($this);
     }
 
-
     /**
      * return Cassandra object.
      *
@@ -93,12 +91,12 @@ class Connection extends \Illuminate\Database\Connection
     {
         return $this->connection;
     }
-    
+
     /**
-    * Return the Cassandra keyspace
-    *
-    * @return string
-    */
+     * Return the Cassandra keyspace
+     *
+     * @return string
+     */
     public function getKeyspace()
     {
         return $this->keyspace;
@@ -120,7 +118,7 @@ class Connection extends \Illuminate\Database\Connection
         if (isset($config['driver_options']) && is_array($config['driver_options'])) {
             $driverOptions = $config['driver_options'];
         }
-        
+
         // Check if the credentials are not already set in the options
         if (!isset($options['username']) && !empty($config['username'])) {
             $options['username'] = $config['username'];
@@ -129,7 +127,6 @@ class Connection extends \Illuminate\Database\Connection
             $options['password'] = $config['password'];
         }
 
-
         /*return new Client($dsn, $options, $driverOptions);*/
 
         $cluster = \Cassandra::cluster();
@@ -137,10 +134,10 @@ class Connection extends \Illuminate\Database\Connection
         // Authentication
         if (isset($options['username']) && isset($options['password'])) {
             $cluster->withCredentials($options['username'], $options['password']);
-            
+
         }
         // Contact Points
-        if (isset($options['contactpoints']) || ( isset($config['host']) && !empty($config['host']))) {
+        if (isset($options['contactpoints']) || (isset($config['host']) && !empty($config['host']))) {
             $contactPoints = $config['host'];
             if (isset($options['contactpoints'])) {
                 $contactPoints = $options['contactpoints'];
@@ -154,10 +151,10 @@ class Connection extends \Illuminate\Database\Connection
 
         if (isset($options['database']) || isset($config['database'])) {
             $this->keyspace = $config['database'];
-            $session = $cluster->build()->connect($config['database']);
+            $session        = $cluster->build()->connect($config['database']);
         } else {
             $this->keyspace = null;
-            $session = $cluster->build()->connect();
+            $session        = $cluster->build()->connect();
         }
 
         return $session;
@@ -185,7 +182,7 @@ class Connection extends \Illuminate\Database\Connection
         extract($config);
 
         // Check if the user passed a complete dsn to the configuration.
-        if (! empty($dsn)) {
+        if (!empty($dsn)) {
             return $dsn;
         }
 

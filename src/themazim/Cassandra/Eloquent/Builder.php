@@ -1,11 +1,11 @@
-<?php 
+<?php
 
-namespace dsturrock\Cassandra\Eloquent;
+namespace themazim\Cassandra\Eloquent;
 
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Cassandra\Driver\Cursor;
 use Cassandra\Model\BSONDocument;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class Builder extends EloquentBuilder
 {

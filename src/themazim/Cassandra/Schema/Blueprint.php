@@ -1,6 +1,6 @@
 <?php
 
-namespace dsturrock\Cassandra\Schema;
+namespace themazim\Cassandra\Schema;
 
 use Closure;
 use Illuminate\Database\Connection;

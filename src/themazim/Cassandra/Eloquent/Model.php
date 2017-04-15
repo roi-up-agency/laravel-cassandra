@@ -1,18 +1,18 @@
-<?php 
+<?php
 
-namespace dsturrock\Cassandra\Eloquent;
+namespace themazim\Cassandra\Eloquent;
 
 use Carbon\Carbon;
+use Cassandra\BSON\ObjectID;
+use Cassandra\BSON\UTCDateTime;
 use DateTime;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use dsturrock\Cassandra\Query\Builder as QueryBuilder;
-use dsturrock\Cassandra\Relations\EmbedsMany;
-use dsturrock\Cassandra\Relations\EmbedsOne;
-use dsturrock\Cassandra\Relations\EmbedsOneOrMany;
-use Cassandra\BSON\ObjectID;
-use Cassandra\BSON\UTCDateTime;
 use ReflectionMethod;
+use themazim\Cassandra\Query\Builder as QueryBuilder;
+use themazim\Cassandra\Relations\EmbedsMany;
+use themazim\Cassandra\Relations\EmbedsOne;
+use themazim\Cassandra\Relations\EmbedsOneOrMany;
 
 abstract class Model extends BaseModel
 {
@@ -50,7 +50,7 @@ abstract class Model extends BaseModel
     {
         // If we don't have a value for 'id', we will use the Cassandra '_id' value.
         // This allows us to work with models in a more sql-like way.
-        if (! $value and array_key_exists('_id', $this->attributes)) {
+        if (!$value and array_key_exists('_id', $this->attributes)) {
             $value = $this->attributes['_id'];
         }
 
@@ -156,7 +156,7 @@ abstract class Model extends BaseModel
         }
 
         // Let Eloquent convert the value to a DateTime instance.
-        if (! $value instanceof DateTime) {
+        if (!$value instanceof DateTime) {
             $value = parent::asDateTime($value);
         }
 
@@ -231,7 +231,7 @@ abstract class Model extends BaseModel
             $method = new ReflectionMethod(get_called_class(), $camelKey);
 
             // Ensure the method is not static to avoid conflicting with Eloquent methods.
-            if (! $method->isStatic()) {
+            if (!$method->isStatic()) {
                 $relations = $this->$camelKey();
 
                 // This attribute matches an embedsOne or embedsMany relation so we need
@@ -347,12 +347,12 @@ abstract class Model extends BaseModel
      */
     protected function originalIsNumericallyEquivalent($key)
     {
-        $current = $this->attributes[$key];
+        $current  = $this->attributes[$key];
         $original = $this->original[$key];
 
         // Date comparison.
         if (in_array($key, $this->getDates())) {
-            $current = $current instanceof UTCDateTime ? $this->asDateTime($current) : $current;
+            $current  = $current instanceof UTCDateTime ? $this->asDateTime($current) : $current;
             $original = $original instanceof UTCDateTime ? $this->asDateTime($original) : $original;
 
             return $current == $original;
@@ -369,7 +369,7 @@ abstract class Model extends BaseModel
      */
     public function drop($columns)
     {
-        if (! is_array($columns)) {
+        if (!is_array($columns)) {
             $columns = [$columns];
         }
 
@@ -399,7 +399,7 @@ abstract class Model extends BaseModel
             }
 
             // Do batch push by default.
-            if (! is_array($values)) {
+            if (!is_array($values)) {
                 $values = [$values];
             }
 
@@ -423,7 +423,7 @@ abstract class Model extends BaseModel
     public function pull($column, $values)
     {
         // Do batch pull by default.
-        if (! is_array($values)) {
+        if (!is_array($values)) {
             $values = [$values];
         }
 

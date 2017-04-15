@@ -1,15 +1,15 @@
-<?php 
+<?php
 
-namespace dsturrock\Cassandra\Eloquent;
+namespace themazim\Cassandra\Eloquent;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Str;
-use dsturrock\Cassandra\Relations\BelongsTo;
-use dsturrock\Cassandra\Relations\BelongsToMany;
-use dsturrock\Cassandra\Relations\HasMany;
-use dsturrock\Cassandra\Relations\HasOne;
-use dsturrock\Cassandra\Relations\MorphTo;
+use themazim\Cassandra\Relations\BelongsTo;
+use themazim\Cassandra\Relations\BelongsToMany;
+use themazim\Cassandra\Relations\HasMany;
+use themazim\Cassandra\Relations\HasOne;
+use themazim\Cassandra\Relations\MorphTo;
 
 trait HybridRelations
 {
@@ -24,7 +24,7 @@ trait HybridRelations
     public function hasOne($related, $foreignKey = null, $localKey = null)
     {
         // Check if it is a relation with an original model.
-        if (! is_subclass_of($related, 'sonvq\Cassandra\Eloquent\Model')) {
+        if (!is_subclass_of($related, 'sonvq\Cassandra\Eloquent\Model')) {
             return parent::hasOne($related, $foreignKey, $localKey);
         }
 
@@ -50,7 +50,7 @@ trait HybridRelations
     public function morphOne($related, $name, $type = null, $id = null, $localKey = null)
     {
         // Check if it is a relation with an original model.
-        if (! is_subclass_of($related, 'sonvq\Cassandra\Eloquent\Model')) {
+        if (!is_subclass_of($related, 'sonvq\Cassandra\Eloquent\Model')) {
             return parent::morphOne($related, $name, $type, $id, $localKey);
         }
 
@@ -76,7 +76,7 @@ trait HybridRelations
     public function hasMany($related, $foreignKey = null, $localKey = null)
     {
         // Check if it is a relation with an original model.
-        if (! is_subclass_of($related, 'sonvq\Cassandra\Eloquent\Model')) {
+        if (!is_subclass_of($related, 'sonvq\Cassandra\Eloquent\Model')) {
             return parent::hasMany($related, $foreignKey, $localKey);
         }
 
@@ -102,7 +102,7 @@ trait HybridRelations
     public function morphMany($related, $name, $type = null, $id = null, $localKey = null)
     {
         // Check if it is a relation with an original model.
-        if (! is_subclass_of($related, 'sonvq\Cassandra\Eloquent\Model')) {
+        if (!is_subclass_of($related, 'sonvq\Cassandra\Eloquent\Model')) {
             return parent::morphMany($related, $name, $type, $id, $localKey);
         }
 
@@ -141,7 +141,7 @@ trait HybridRelations
         }
 
         // Check if it is a relation with an original model.
-        if (! is_subclass_of($related, 'sonvq\Cassandra\Eloquent\Model')) {
+        if (!is_subclass_of($related, 'sonvq\Cassandra\Eloquent\Model')) {
             return parent::belongsTo($related, $foreignKey, $otherKey, $relation);
         }
 
@@ -236,7 +236,7 @@ trait HybridRelations
         }
 
         // Check if it is a relation with an original model.
-        if (! is_subclass_of($related, 'sonvq\Cassandra\Eloquent\Model')) {
+        if (!is_subclass_of($related, 'sonvq\Cassandra\Eloquent\Model')) {
             return parent::belongsToMany($related, $collection, $foreignKey, $otherKey, $relation);
         }
 

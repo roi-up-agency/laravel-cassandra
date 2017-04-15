@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace dsturrock\Cassandra\Eloquent;
+namespace themazim\Cassandra\Eloquent;
 
 trait SoftDeletes
 {

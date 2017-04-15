@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace dsturrock\Cassandra\Queue;
+namespace themazim\Cassandra\Queue;
 
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Queue\Connectors\ConnectorInterface;

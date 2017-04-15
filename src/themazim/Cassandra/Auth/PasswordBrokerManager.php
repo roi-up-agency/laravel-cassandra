@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace dsturrock\Cassandra\Auth;
+namespace themazim\Cassandra\Auth;
 
 use Illuminate\Auth\Passwords\PasswordBrokerManager as BasePasswordBrokerManager;
 

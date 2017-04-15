@@ -1,10 +1,10 @@
-<?php 
+<?php
 
-namespace dsturrock\Cassandra;
+namespace themazim\Cassandra;
 
 use Illuminate\Support\ServiceProvider;
-use dsturrock\Cassandra\Eloquent\Model;
-use dsturrock\Cassandra\Queue\CassandraConnector;
+use themazim\Cassandra\Eloquent\Model;
+use themazim\Cassandra\Queue\CassandraConnector;
 
 class CassandraServiceProvider extends ServiceProvider
 {

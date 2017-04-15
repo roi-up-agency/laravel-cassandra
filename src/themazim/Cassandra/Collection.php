@@ -1,9 +1,9 @@
-<?php 
+<?php
 
-namespace dsturrock\Cassandra;
+namespace themazim\Cassandra;
 
-use Exception;
 use Cassandra\Collection as CassandraCollection;
+use Exception;
 
 class Collection
 {
@@ -39,7 +39,7 @@ class Collection
      */
     public function __call($method, $parameters)
     {
-        $start = microtime(true);
+        $start  = microtime(true);
         $result = call_user_func_array([$this->collection, $method], $parameters);
 
         if ($this->connection->logging()) {

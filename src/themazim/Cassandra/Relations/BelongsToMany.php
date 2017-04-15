@@ -1,6 +1,6 @@
 <?php
 
-namespace dsturrock\Cassandra\Relations;
+namespace themazim\Cassandra\Relations;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
