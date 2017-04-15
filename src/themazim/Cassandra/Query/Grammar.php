@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace sonvq\Cassandra\Query;
+namespace themazim\Cassandra\Query;
 
 use Illuminate\Database\Query\Grammars\Grammar as BaseGrammar;
 

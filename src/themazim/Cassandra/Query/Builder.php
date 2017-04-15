@@ -1,17 +1,17 @@
 <?php
 
-namespace sonvq\Cassandra\Query;
+namespace themazim\Cassandra\Query;
 
+use Cassandra\BSON\ObjectID;
+use Cassandra\BSON\Regex;
+use Cassandra\BSON\UTCDateTime;
 use Closure;
 use DateTime;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use sonvq\Cassandra\Connection;
-use Cassandra\BSON\ObjectID;
-use Cassandra\BSON\Regex;
-use Cassandra\BSON\UTCDateTime;
+use themazim\Cassandra\Connection;
 
 class Builder extends BaseBuilder
 {
@@ -88,10 +88,10 @@ class Builder extends BaseBuilder
      */
     public function __construct(Connection $connection, Processor $processor)
     {
-        $this->grammar = new Grammar;
+        $this->grammar    = new Grammar;
         $this->connection = $connection;
-        $this->session = $this->connection->getCassandraSession();
-        $this->processor = $processor;
+        $this->session    = $this->connection->getCassandraSession();
+        $this->processor  = $processor;
     }
 
     /**
@@ -299,7 +299,7 @@ class Builder extends BaseBuilder
             $queryAndArguments = $this->buildSelectQuery($wheres, $options);
 
             $rawQuery = $queryAndArguments["query"];
-            
+
             if ($this->limit) {
                 $rawQuery = $this->addLimitClause($rawQuery);
             }
@@ -309,14 +309,13 @@ class Builder extends BaseBuilder
             }
             // Execute query
             $executionOptions = new \Cassandra\ExecutionOptions($options);
-            $preparedStmt = $this->session->prepare($rawQuery);
-            $rows = $this->session->execute($preparedStmt, $executionOptions);
-            
+            $preparedStmt     = $this->session->prepare($rawQuery);
+            $rows             = $this->session->execute($preparedStmt, $executionOptions);
+
             $rowValues = array();
 
             // Return results as an array with numeric keys
             while ($rows->valid()) {
-
 
                 $rowValues[] = $this->processCassandraRow($rows);
 
@@ -326,12 +325,8 @@ class Builder extends BaseBuilder
 
             return $rowValues;
 
-
         }
     }
-
-
-
 
     /**
      * Build a raw select query and values to bind
@@ -359,17 +354,17 @@ class Builder extends BaseBuilder
         }
 
         $whereString = "";
-        $arguments = array();
-       //Keys should be one of 'and', 'or'
+        $arguments   = array();
+        //Keys should be one of 'and', 'or'
         foreach ($wheres as $boolean => $values) {
 
             $whereStatements = array();
-            
+
             $count = count($values);
 
             for ($i = 0; $i < $count; $i++) {
                 foreach ($values[$i] as $column => $value) {
-                    $whereStatements[] = " \"{$column}\" =  ? ";
+                    $whereStatements[]  = " \"{$column}\" =  ? ";
                     $arguments[$column] = $value;
                 }
             }
@@ -386,7 +381,7 @@ class Builder extends BaseBuilder
         $cql .= " WHERE {$whereString}";
 
         return array("query" => $cql, "arguments" => $arguments);
- 
+
     }
 
     private function addLimitClause($queryString)
@@ -446,7 +441,7 @@ class Builder extends BaseBuilder
         // Once we have executed the query, we will reset the aggregate property so
         // that more select queries can be executed against the database without
         // the aggregate value getting in the way when the grammar builds it.
-        $this->columns = null;
+        $this->columns   = null;
         $this->aggregate = null;
 
         if (isset($results[0])) {
@@ -463,7 +458,7 @@ class Builder extends BaseBuilder
      */
     public function exists()
     {
-        return ! is_null($this->first());
+        return !is_null($this->first());
     }
 
     /**
@@ -551,13 +546,13 @@ class Builder extends BaseBuilder
         foreach ($values as $value) {
             // As soon as we find a value that is not an array we assume the user is
             // inserting a single document.
-            if (! is_array($value)) {
+            if (!is_array($value)) {
                 $batch = false;
                 break;
             }
         }
 
-        if (! $batch) {
+        if (!$batch) {
             $values = [$values];
         }
 
@@ -598,7 +593,7 @@ class Builder extends BaseBuilder
     public function update(array $values, array $options = [])
     {
         // Use $set as default operator.
-        if (! starts_with(key($values), '$')) {
+        if (!starts_with(key($values), '$')) {
             $values = ['$set' => $values];
         }
 
@@ -617,7 +612,7 @@ class Builder extends BaseBuilder
     {
         $query = ['$inc' => [$column => $amount]];
 
-        if (! empty($extra)) {
+        if (!empty($extra)) {
             $query['$set'] = $extra;
         }
 
@@ -744,7 +739,7 @@ class Builder extends BaseBuilder
         if ($expression instanceof Closure) {
             return call_user_func($expression, $this->collection);
         } // Create an expression for the given value
-        elseif (! is_null($expression)) {
+        elseif (!is_null($expression)) {
             return new Expression($expression);
         }
 
@@ -810,7 +805,7 @@ class Builder extends BaseBuilder
      */
     public function drop($columns)
     {
-        if (! is_array($columns)) {
+        if (!is_array($columns)) {
             $columns = [$columns];
         }
 
@@ -845,7 +840,7 @@ class Builder extends BaseBuilder
     protected function performUpdate($query, array $options = [])
     {
         // Update multiple items by default.
-        if (! array_key_exists('multiple', $options)) {
+        if (!array_key_exists('multiple', $options)) {
             $options['multiple'] = true;
         }
 
@@ -992,10 +987,10 @@ class Builder extends BaseBuilder
             $regex = preg_replace('#(^|[^\\\])%#', '$1.*', preg_quote($value));
 
             // Convert like to regular expression.
-            if (! starts_with($value, '%')) {
+            if (!starts_with($value, '%')) {
                 $regex = '^' . $regex;
             }
-            if (! ends_with($value, '%')) {
+            if (!ends_with($value, '%')) {
                 $regex = $regex . '$';
             }
 
@@ -1003,11 +998,11 @@ class Builder extends BaseBuilder
         } // Manipulate regexp operations.
         elseif (in_array($operator, ['regexp', 'not regexp', 'regex', 'not regex'])) {
             // Automatically convert regular expression strings to Regex objects.
-            if (! $value instanceof Regex) {
-                $e = explode('/', $value);
-                $flag = end($e);
+            if (!$value instanceof Regex) {
+                $e      = explode('/', $value);
+                $flag   = end($e);
                 $regstr = substr($value, 1, -(strlen($flag) + 1));
-                $value = new Regex($regstr, $flag);
+                $value  = new Regex($regstr, $flag);
             }
 
             // For inverse regexp operations, we can just use the $not operator
@@ -1017,7 +1012,7 @@ class Builder extends BaseBuilder
             }
         }
 
-        if (! isset($operator) or $operator == '=') {
+        if (!isset($operator) or $operator == '=') {
             $query = [$column => $value];
         } elseif (array_key_exists($operator, $this->conversion)) {
             $query = [$column => [$this->conversion[$operator] => $value]];
@@ -1052,7 +1047,7 @@ class Builder extends BaseBuilder
     protected function compileWhereNull($where)
     {
         $where['operator'] = '=';
-        $where['value'] = null;
+        $where['value']    = null;
 
         return $this->compileWhereBasic($where);
     }
@@ -1060,7 +1055,7 @@ class Builder extends BaseBuilder
     protected function compileWhereNotNull($where)
     {
         $where['operator'] = '!=';
-        $where['value'] = null;
+        $where['value']    = null;
 
         return $this->compileWhereBasic($where);
     }
