@@ -1,5 +1,5 @@
 {
-    "name": "themazim/cassandra",
+    "name": "themazim/laravel-cassandra",
     "description": "Cassandra Eloquent model and Query builder for Laravel",
     "keywords": ["laravel","eloquent","cassandra","database","model"],
     "homepage": "https://github.com/themazim/laravel-cassandra",
