@@ -1,8 +1,8 @@
 {
-    "name": "dsturrock/cassandra",
+    "name": "themazim/cassandra",
     "description": "Cassandra Eloquent model and Query builder for Laravel",
     "keywords": ["laravel","eloquent","cassandra","database","model"],
-    "homepage": "https://github.com/dsturrock/laravel-cassandra",
+    "homepage": "https://github.com/themazim/laravel-cassandra",
     "type": "project",
     "repositories": [
             {
@@ -21,18 +21,18 @@
     ],
     "license" : "MIT",
     "require": {
-        "illuminate/support": "5.1.*",
-        "illuminate/container": "5.1.*",
-        "illuminate/database": "5.1.*",
-        "illuminate/events": "5.1.*"
+        "illuminate/support": "5.4.*",
+        "illuminate/container": "5.4.*",
+        "illuminate/database": "5.4.*",
+        "illuminate/events": "5.4.*"
     },
     "require-dev": {
 
     },
     "autoload": {
         "psr-0": {
-            "dsturrock\\Cassandra": "src/",
-            "dsturrock\\Eloquent": "src/"
+            "themazim\\Cassandra": "src/",
+            "themazim\\Eloquent": "src/"
         }
     },
     "autoload-dev": {
