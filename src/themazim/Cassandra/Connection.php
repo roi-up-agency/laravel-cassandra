@@ -2,6 +2,8 @@
 
 namespace themazim\Cassandra;
 
+use Illuminate\Database\Events\StatementPrepared;
+
 class Connection extends \Illuminate\Database\Connection
 {
     /**
@@ -21,7 +23,7 @@ class Connection extends \Illuminate\Database\Connection
     /**
      * Create a new database connection instance.
      *
-     * @param  array   $config
+     * @param  array $config
      */
     public function __construct(array $config)
     {
@@ -34,6 +36,9 @@ class Connection extends \Illuminate\Database\Connection
         $this->connection = $this->createConnection(null, $config, $options);
 
         $this->useDefaultPostProcessor();
+        $this->useDefaultSchemaGrammar();
+        $this->useDefaultQueryGrammar();
+        $this->setPdo(new PDO($this->connection));
     }
 
     /**
@@ -43,20 +48,28 @@ class Connection extends \Illuminate\Database\Connection
      */
     protected function getDefaultPostProcessor()
     {
-        return new Query\Processor;
+        return new Query\Processor();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getDefaultQueryGrammar()
+    {
+        return new Query\Grammar();
     }
 
     /**
      * Begin a fluent query against a database collection.
      *
-     * @param  string  $collection
+     * @param  string $collection
      * @return Query\Builder
      */
     public function collection($collection)
     {
-        $processor = $this->getPostProcessor();
+        $grammar = $this->getQueryGrammar();
 
-        $query = new Query\Builder($this, $processor);
+        $query = new Query\Builder($this, $grammar);
 
         return $query->from($collection);
     }
@@ -64,7 +77,7 @@ class Connection extends \Illuminate\Database\Connection
     /**
      * Begin a fluent query against a database collection.
      *
-     * @param  string  $table
+     * @param  string $table
      * @return Query\Builder
      */
     public function table($table)
@@ -80,6 +93,14 @@ class Connection extends \Illuminate\Database\Connection
     public function getSchemaBuilder()
     {
         return new Schema\Builder($this);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDefaultSchemaGrammar()
+    {
+        return new \themazim\Cassandra\Schema\Grammars\Grammar(this);
     }
 
     /**
@@ -105,9 +126,9 @@ class Connection extends \Illuminate\Database\Connection
     /**
      * Create a new Cassandra connection.
      *
-     * @param  string  $dsn
-     * @param  array   $config
-     * @param  array   $options
+     * @param  string $dsn
+     * @param  array $config
+     * @param  array $options
      * @return Cassandra
      */
     protected function createConnection($dsn, array $config, array $options)
@@ -151,10 +172,10 @@ class Connection extends \Illuminate\Database\Connection
 
         if (isset($options['database']) || isset($config['database'])) {
             $this->keyspace = $config['database'];
-            $session        = $cluster->build()->connect($config['database']);
+            $session = $cluster->build()->connect($config['database']);
         } else {
             $this->keyspace = null;
-            $session        = $cluster->build()->connect();
+            $session = $cluster->build()->connect();
         }
 
         return $session;
@@ -171,7 +192,7 @@ class Connection extends \Illuminate\Database\Connection
     /**
      * Create a DSN string from a configuration.
      *
-     * @param  array   $config
+     * @param  array $config
      * @return string
      */
     protected function getDsn(array $config)
@@ -202,7 +223,7 @@ class Connection extends \Illuminate\Database\Connection
     /**
      * Get the elapsed time since a given starting point.
      *
-     * @param  int    $start
+     * @param  int $start
      * @return float
      */
     public function getElapsedTime($start)
@@ -221,10 +242,83 @@ class Connection extends \Illuminate\Database\Connection
     }
 
     /**
+     * Run a select statement against the database.
+     *
+     * @param  string $query
+     * @param  array $bindings
+     * @param  bool $useReadPdo
+     * @return array
+     */
+    public function select($query, $bindings = [], $useReadPdo = true)
+    {
+        return $this->run($query, $bindings, function ($query, $bindings) use ($useReadPdo) {
+            if ($this->pretending()) {
+                return [];
+            }
+            $statement = $this->connection->prepare($query);
+            return $this->connection->execute($statement, ['arguments' => $this->prepareBindings($bindings)]);
+        });
+    }
+
+    /**
+     * Run a select statement against the database and returns a generator.
+     *
+     * @param  string $query
+     * @param  array $bindings
+     * @param  bool $useReadPdo
+     * @return \Generator
+     */
+    public function cursor($query, $bindings = [], $useReadPdo = true)
+    {
+        $result = $this->select($query, $bindings, $useReadPdo);
+
+        foreach ($result as $record) {
+            yield $record;
+        }
+    }
+
+    /**
+     * Execute an SQL statement and return the boolean result.
+     *
+     * @param  string $query
+     * @param  array $bindings
+     * @return bool
+     */
+    public function statement($query, $bindings = [])
+    {
+        return $this->run($query, $bindings, function ($query, $bindings) {
+            if ($this->pretending()) {
+                return true;
+            }
+
+            $statement = $this->connection->prepare($query);
+
+            return $this->connection->execute($statement, ['arguments' => $this->prepareBindings($bindings)]);
+        });
+    }
+
+    public function affectingStatement($query, $bindings = [])
+    {
+        throw new \RuntimeException('affectingStatement not supported');
+    }
+
+    /**
+     * Bind values to their parameters in the given statement.
+     *
+     * @param  \PDOStatement $statement
+     * @param  array $bindings
+     * @return void
+     */
+    public function bindValues($statement, $bindings)
+    {
+        throw new \RuntimeException('bindValues not supported');
+    }
+
+    /**
      * Dynamically pass methods to the connection.
      *
-     * @param  string  $method
-     * @param  array   $parameters
+     * @param  string $method
+     * @param  array $parameters
      * @return mixed
      */
     public function __call($method, $parameters)
