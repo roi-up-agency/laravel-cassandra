@@ -160,9 +160,10 @@ class Grammar extends \Illuminate\Database\Schema\Grammars\Grammar
      */
     public function compileIndex(Blueprint $blueprint, Fluent $command)
     {
-        return sprintf('create index %s ON %s %s%s',
-            $this->wrap($command->index),
+        return sprintf('create index %s ON %s (%s) %s%s',
+            $this->wrap($blueprint->getTable() . '_' . $command->index),
             $this->wrapTable($blueprint),
+            implode(',', array_map([$this, 'wrapValue'], $command->columns)),
             $command->algorithm ? ' using ' . $command->algorithm : '',
             $command->options ? ' WITH options = ' . json_encode($command->options) : ''
         );
@@ -214,7 +215,7 @@ class Grammar extends \Illuminate\Database\Schema\Grammars\Grammar
      */
     public function compileDropIndex(Blueprint $blueprint, Fluent $command)
     {
-        $index = $this->wrap($command->index);
+        $index = $this->wrap($blueprint->getTable() . '_' . $command->index);
         return "drop index {$index}";
     }
 
