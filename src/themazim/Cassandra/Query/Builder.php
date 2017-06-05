@@ -2,9 +2,6 @@
 
 namespace themazim\Cassandra\Query;
 
-use Cassandra\BSON\ObjectID;
-use Cassandra\BSON\Regex;
-use Cassandra\BSON\UTCDateTime;
 use Closure;
 use DateTime;
 use Illuminate\Database\Query\Builder as BaseBuilder;

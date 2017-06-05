@@ -3,8 +3,6 @@
 namespace themazim\Cassandra\Eloquent;
 
 use Carbon\Carbon;
-use Cassandra\BSON\ObjectID;
-use Cassandra\BSON\UTCDateTime;
 use DateTime;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -43,7 +41,8 @@ abstract class Model extends BaseModel
     /**
      * Custom accessor for the model's id.
      *
-     * @param  mixed  $value
+     * @param  mixed $value
+     *
      * @return mixed
      */
     public function getIdAttribute($value)
@@ -56,7 +55,7 @@ abstract class Model extends BaseModel
 
         // Convert ObjectID to string.
         if ($value instanceof ObjectID) {
-            return (string) $value;
+            return (string)$value;
         }
 
         return $value;
@@ -75,10 +74,11 @@ abstract class Model extends BaseModel
     /**
      * Define an embedded one-to-many relationship.
      *
-     * @param  string  $related
-     * @param  string  $localKey
-     * @param  string  $foreignKey
-     * @param  string  $relation
+     * @param  string $related
+     * @param  string $localKey
+     * @param  string $foreignKey
+     * @param  string $relation
+     *
      * @return \themazim\Cassandra\Relations\EmbedsMany
      */
     protected function embedsMany($related, $localKey = null, $foreignKey = null, $relation = null)
@@ -110,10 +110,11 @@ abstract class Model extends BaseModel
     /**
      * Define an embedded one-to-many relationship.
      *
-     * @param  string  $related
-     * @param  string  $localKey
-     * @param  string  $foreignKey
-     * @param  string  $relation
+     * @param  string $related
+     * @param  string $localKey
+     * @param  string $foreignKey
+     * @param  string $relation
+     *
      * @return \themazim\Cassandra\Relations\EmbedsOne
      */
     protected function embedsOne($related, $localKey = null, $foreignKey = null, $relation = null)
@@ -145,7 +146,8 @@ abstract class Model extends BaseModel
     /**
      * Convert a DateTime to a storable UTCDateTime object.
      *
-     * @param  DateTime|int  $value
+     * @param  DateTime|int $value
+     *
      * @return UTCDateTime
      */
     public function fromDateTime($value)
@@ -166,7 +168,8 @@ abstract class Model extends BaseModel
     /**
      * Return a timestamp as DateTime object.
      *
-     * @param  mixed  $value
+     * @param  mixed $value
+     *
      * @return DateTime
      */
     protected function asDateTime($value)
@@ -212,7 +215,8 @@ abstract class Model extends BaseModel
     /**
      * Get an attribute from the model.
      *
-     * @param  string  $key
+     * @param  string $key
+     *
      * @return mixed
      */
     public function getAttribute($key)
@@ -256,7 +260,8 @@ abstract class Model extends BaseModel
     /**
      * Get an attribute from the $attributes array.
      *
-     * @param  string  $key
+     * @param  string $key
+     *
      * @return mixed
      */
     protected function getAttributeFromArray($key)
@@ -276,8 +281,8 @@ abstract class Model extends BaseModel
     /**
      * Set a given attribute on the model.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param  string $key
+     * @param  mixed  $value
      */
     public function setAttribute($key, $value)
     {
@@ -315,14 +320,14 @@ abstract class Model extends BaseModel
         // nicely when your models are converted to JSON.
         foreach ($attributes as $key => &$value) {
             if ($value instanceof ObjectID) {
-                $value = (string) $value;
+                $value = (string)$value;
             }
         }
 
         // Convert dot-notation dates.
         foreach ($this->getDates() as $key) {
             if (str_contains($key, '.') and array_has($attributes, $key)) {
-                array_set($attributes, $key, (string) $this->asDateTime(array_get($attributes, $key)));
+                array_set($attributes, $key, (string)$this->asDateTime(array_get($attributes, $key)));
             }
         }
 
@@ -342,17 +347,18 @@ abstract class Model extends BaseModel
     /**
      * Determine if the new and old values for a given key are numerically equivalent.
      *
-     * @param  string  $key
+     * @param  string $key
+     *
      * @return bool
      */
     protected function originalIsNumericallyEquivalent($key)
     {
-        $current  = $this->attributes[$key];
+        $current = $this->attributes[$key];
         $original = $this->original[$key];
 
         // Date comparison.
         if (in_array($key, $this->getDates())) {
-            $current  = $current instanceof UTCDateTime ? $this->asDateTime($current) : $current;
+            $current = $current instanceof UTCDateTime ? $this->asDateTime($current) : $current;
             $original = $original instanceof UTCDateTime ? $this->asDateTime($original) : $original;
 
             return $current == $original;
@@ -364,7 +370,8 @@ abstract class Model extends BaseModel
     /**
      * Remove one or more fields.
      *
-     * @param  mixed  $columns
+     * @param  mixed $columns
+     *
      * @return int
      */
     public function drop($columns)
@@ -416,8 +423,9 @@ abstract class Model extends BaseModel
     /**
      * Remove one or more values from an array.
      *
-     * @param  string  $column
-     * @param  mixed   $values
+     * @param  string $column
+     * @param  mixed  $values
+     *
      * @return mixed
      */
     public function pull($column, $values)
@@ -437,9 +445,9 @@ abstract class Model extends BaseModel
     /**
      * Append one or more values to the underlying attribute value and sync with original.
      *
-     * @param  string  $column
-     * @param  array   $values
-     * @param  bool    $unique
+     * @param  string $column
+     * @param  array  $values
+     * @param  bool   $unique
      */
     protected function pushAttributeValues($column, array $values, $unique = false)
     {
@@ -462,8 +470,8 @@ abstract class Model extends BaseModel
     /**
      * Remove one or more values to the underlying attribute value and sync with original.
      *
-     * @param  string  $column
-     * @param  array   $values
+     * @param  string $column
+     * @param  array  $values
      */
     protected function pullAttributeValues($column, array $values)
     {
@@ -485,7 +493,7 @@ abstract class Model extends BaseModel
     /**
      * Set the parent relation.
      *
-     * @param  \Illuminate\Database\Eloquent\Relations\Relation  $relation
+     * @param  \Illuminate\Database\Eloquent\Relations\Relation $relation
      */
     public function setParentRelation(Relation $relation)
     {
@@ -506,6 +514,7 @@ abstract class Model extends BaseModel
      * Create a new Eloquent query builder for the model.
      *
      * @param  \themazim\Cassandra\Query\Builder $query
+     *
      * @return \themazim\Cassandra\Eloquent\Builder|static
      */
     public function newEloquentBuilder($query)
@@ -516,20 +525,21 @@ abstract class Model extends BaseModel
     /**
      * Get a new query builder instance for the connection.
      *
-     * @return Builder
+     * @return \Illuminate\Database\Query\Builder
      */
     protected function newBaseQueryBuilder()
     {
         $connection = $this->getConnection();
 
-        return new QueryBuilder($connection, $connection->getPostProcessor());
+        return new QueryBuilder($connection);
     }
 
     /**
      * Handle dynamic method calls into the method.
      *
-     * @param  string  $method
-     * @param  array   $parameters
+     * @param  string $method
+     * @param  array  $parameters
+     *
      * @return mixed
      */
     public function __call($method, $parameters)
