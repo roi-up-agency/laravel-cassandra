@@ -1,8 +1,8 @@
 {
-    "name": "themazim/laravel-cassandra",
+    "name": "gustavodebiasi/laravel-cassandra",
     "description": "Cassandra Eloquent model and Query builder for Laravel",
     "keywords": ["laravel","eloquent","cassandra","database","model"],
-    "homepage": "https://github.com/themazim/laravel-cassandra",
+    "homepage": "https://github.com/gustavodebiasi/laravel-cassandra",
     "type": "project",
     "repositories": [
             {
