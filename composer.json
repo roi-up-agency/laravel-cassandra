@@ -20,13 +20,13 @@
         }
     ],
     "license" : "MIT",
-    "minimum-stability": "master",
+    "minimum-stability": "dev",
     "require": {
       "php": ">=7.0.0",
-      "illuminate/support": "5.5",
-      "illuminate/container": "5.5",
-      "illuminate/database": "5.5",
-      "illuminate/events": "5.5"
+      "illuminate/support": "~5.5",
+      "illuminate/container": "~5.5",
+      "illuminate/database": "~5.5",
+      "illuminate/events": "~5.5"
     },
     "require-dev": {
 
