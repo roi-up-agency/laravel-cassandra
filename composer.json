@@ -20,7 +20,7 @@
         }
     ],
     "license" : "MIT",
-    "minimum-stability": "dev",
+    "minimum-stability": "master",
     "require": {
       "php": ">=7.0.0",
       "illuminate/support": "~5.5",
