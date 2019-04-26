@@ -22,11 +22,11 @@
     "license" : "MIT",
     "minimum-stability": "dev",
     "require": {
-      "php": ">=7.0.0",
-      "illuminate/support": "~5.5",
-      "illuminate/container": "~5.5",
-      "illuminate/database": "~5.5",
-      "illuminate/events": "~5.5"
+      "php": ">=7.1.0",
+      "illuminate/support": "~5.8",
+      "illuminate/container": "~5.8",
+      "illuminate/database": "~5.8",
+      "illuminate/events": "~5.8"
     },
     "require-dev": {
 
