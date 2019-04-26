@@ -1,5 +1,5 @@
 <?php
-namespace themazim\Cassandra;
+namespace sashalenz\Cassandra;
 
 use Orchestra\Testbench\TestCase;
 
