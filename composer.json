@@ -1,13 +1,13 @@
 {
-    "name": "gustavodebiasi/laravel-cassandradb",
+    "name": "sashalenz/laravel-cassandra",
     "description": "Cassandra Eloquent model and Query builder for Laravel",
     "keywords": ["laravel","eloquent","cassandra","database","model"],
-    "homepage": "https://github.com/gustavodebiasi/laravel-cassandradb",
+    "homepage": "https://github.com/sashalenz/laravel-cassandra",
     "type": "project",
     "repositories": [
             {
                 "type": "composer",
-                "url": "https://packages.nn4m.net"
+                "url": "https://packagist.org"
             }
     ],
     "authors": [
