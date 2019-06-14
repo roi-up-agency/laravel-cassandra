@@ -1,4 +1,4 @@
-<?php namespace sashalenz\Cassandra\QueryBuilder;
+<?php namespace RoiupAgency\Cassadra\QueryBuilder;
 
 class TestSelects extends BaseTestCase
 {

@@ -1,5 +1,5 @@
 <?php
-namespace sashalenz\Cassandra;
+namespace Cassandra;
 
 use Orchestra\Testbench\TestCase;
 
