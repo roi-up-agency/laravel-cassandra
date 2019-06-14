@@ -26,7 +26,8 @@
       "illuminate/support": "~5.8",
       "illuminate/container": "~5.8",
       "illuminate/database": "~5.8",
-      "illuminate/events": "~5.8"
+      "illuminate/events": "~5.8",
+      "datastax/php-driver": "^1.2"
     },
     "require-dev": {
 
